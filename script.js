@@ -6,6 +6,12 @@ let selectedBet = null;
 const suits = ['♠', '♦', '♥', '♣'];
 const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
+// 📊 출목표(경기 기록) 데이터 변수
+let history = [];
+let countP = 0;
+let countB = 0;
+let countT = 0;
+
 // 베팅 선택 함수
 function selectBet(type) {
     selectedBet = type;
@@ -130,7 +136,7 @@ function playGame() {
     endGame(pScore, bScore);
 }
 
-// 결과 판정 및 정산
+// 결과 판정, 정산 및 출목표 업데이트
 function endGame(pScore, bScore) {
     let winner = '';
     if (pScore > bScore) winner = 'PLAYER';
@@ -141,8 +147,8 @@ function endGame(pScore, bScore) {
     
     if (selectedBet === winner) {
         let payout = 0;
-        if (winner === 'TIE') payout = betAmount * 9; // 타이 9배 정산
-        else payout = Math.floor(betAmount * 1.95); // 플레이어/뱅커 1.95배 정산 (수수료 감안)
+        if (winner === 'TIE') payout = betAmount * 9;
+        else payout = Math.floor(betAmount * 1.95);
         
         balance += payout;
         resultText += `🎉 베팅 성공! +${payout.toLocaleString()}원`;
@@ -153,7 +159,53 @@ function endGame(pScore, bScore) {
     document.getElementById('result-text').innerText = resultText;
     document.getElementById('balance').innerText = balance.toLocaleString();
     
+    // 📊 출목표 시스템 연동
+    updateRoadmap(winner);
+
     // 초기화
     selectedBet = null;
     document.getElementById('current-bet-type').innerText = '없음';
+}
+
+// 출목표 화면을 갱신하는 함수
+function updateRoadmap(winner) {
+    // 1. 카운트 증가 및 하단 스코어 텍스트 변경
+    if (winner === 'PLAYER') { 
+        countP++; 
+        document.getElementById('count-p').innerText = countP; 
+    } else if (winner === 'BANKER') { 
+        countB++; 
+        document.getElementById('count-b').innerText = countB; 
+    } else { 
+        countT++; 
+        document.getElementById('count-t').innerText = countT; 
+    }
+
+    // 2. 전체 히스토리 배열에 데이터 삽입 (최근 20개까지만 유지)
+    history.push(winner);
+    if (history.length > 20) {
+        history.shift(); // 20개가 넘어가면 가장 오래된 기록 삭제
+    }
+
+    // 3. 보드판 화면 그리기
+    const board = document.getElementById('roadmap-board');
+    board.innerHTML = ''; // 보드 리셋 후 다시 그리기
+
+    history.forEach(result => {
+        const dot = document.createElement('div');
+        if (result === 'PLAYER') {
+            dot.className = 'roadmap-dot dot-p';
+            dot.innerText = 'P';
+        } else if (result === 'BANKER') {
+            dot.className = 'roadmap-dot dot-b';
+            dot.innerText = 'B';
+        } else {
+            dot.className = 'roadmap-dot dot-t';
+            dot.innerText = 'T';
+        }
+        board.appendChild(dot);
+    });
+
+    // 가로 스크롤을 항상 최신 기록(오른쪽 끝)으로 자동 이동
+    board.scrollLeft = board.scrollWidth;
 }
