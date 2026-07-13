@@ -189,3 +189,71 @@ h1 {
     text-align: center;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
 }
+
+/* 📊 출목표(경기 기록) 디자인 구역 */
+.roadmap-zone {
+    margin-top: 25px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 540px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.roadmap-zone h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    color: #e0e0e0;
+    margin-bottom: 12px;
+}
+
+.roadmap-board {
+    display: flex;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 10px;
+    min-height: 34px;
+    overflow-x: auto; /* 기록이 늘어나면 가로 스크롤 활성화 */
+    justify-content: flex-start;
+    align-items: center;
+    border: 1px solid #34495e;
+}
+
+/* 스크롤바 디자인 커스텀 (깔끔하게 숨기거나 얇게 처리) */
+.roadmap-board::-webkit-scrollbar {
+    height: 6px;
+}
+.roadmap-board::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.roadmap-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    flex-shrink: 0;
+    animation: dealCard 0.25s ease-out;
+}
+
+.dot-p { background-color: var(--player-blue); }
+.dot-b { background-color: var(--banker-red); }
+.dot-t { background-color: var(--tie-green); }
+
+.roadmap-summary {
+    margin-top: 12px;
+    font-size: 0.95rem;
+    color: #bdc3c7;
+    letter-spacing: 0.5px;
+}
