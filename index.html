@@ -4,151 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini Baccarat Game</title>
-    <style>
-        :root {
-            --bg-color: #0f4c3a; /* 카지노 테이블 느낌의 그린 */
-            --card-bg: #ffffff;
-            --text-color: #ffffff;
-            --gold: #ffd700;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        h1 {
-            color: var(--gold);
-            margin-bottom: 10px;
-        }
-
-        .scoreboard {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 15px 30px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            text-align: center;
-            border: 1px solid var(--gold);
-        }
-
-        .table {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            max-width: 800px;
-            margin-bottom: 30px;
-        }
-
-        .area {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.1);
-            margin: 0 10px;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-        }
-
-        .area.player { border-color: #3498db; }
-        .area.banker { border-color: #e74c3c; }
-
-        .area h2 {
-            margin-top: 0;
-            font-size: 1.5rem;
-        }
-        .area.player h2 { color: #3498db; }
-        .area.banker h2 { color: #e74c3c; }
-
-        .score-display {
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 10px 0;
-            color: var(--gold);
-        }
-
-        .cards-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            min-height: 120px;
-            margin-top: 15px;
-        }
-
-        .card {
-            width: 70px;
-            height: 110px;
-            background: var(--card-bg);
-            color: #000;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 8px;
-            box-sizing: border-box;
-            font-weight: bold;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            animation: dealCard 0.3s ease-out;
-        }
-
-        .card.red { color: #e74c3c; }
-
-        @keyframes dealCard {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .betting-zone {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 15px;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .bet-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-player { background-color: #3498db; color: white; }
-        .btn-banker { background-color: #e74c3c; color: white; }
-        .btn-tie { background-color: #2ecc71; color: white; }
-        .btn-deal { background-color: var(--gold); color: #000; width: 100%; font-size: 1.2rem; }
-
-        .btn:hover { transform: scale(1.05); filter: brightness(1.1); }
-        .btn:disabled { background-color: #7f8c8d; cursor: not-allowed; transform: none; }
-
-        .result-message {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--gold);
-            margin: 20px 0;
-            min-height: 40px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -160,14 +16,12 @@
     </div>
 
     <div class="table">
-        <!-- 플레이어 영역 -->
         <div class="area player">
             <h2>PLAYER</h2>
             <div class="score-display" id="player-score">0</div>
             <div class="cards-container" id="player-cards"></div>
         </div>
 
-        <!-- 뱅커 영역 -->
         <div class="area banker">
             <h2>BANKER</h2>
             <div class="score-display" id="banker-score">0</div>
@@ -177,6 +31,7 @@
 
     <div class="result-message" id="result-text">베팅 영역을 선택하고 DEAL을 누르세요!</div>
 
+    <!-- 베팅 영역 -->
     <div class="betting-zone">
         <h3>어디에 베팅하시겠습니까? (판당 1,000원 고정)</h3>
         <div class="bet-buttons">
@@ -187,169 +42,20 @@
         <button class="btn btn-deal" id="deal-btn" onclick="playGame()" disabled>DEAL 🃏</button>
     </div>
 
-    <script>
-        // 게임 상태 변수
-        let balance = 10000;
-        const betAmount = 1000;
-        let selectedBet = null;
+    <!-- 📊 여기에 출목표(경기 기록) 구역이 들어갔어! -->
+    <div class="roadmap-zone">
+        <h3>📊 경기 기록 (최근 20경기)</h3>
+        <div class="roadmap-board" id="roadmap-board">
+            <!-- 자바스크립트에서 결과 동적 생성 -->
+        </div>
+        <div class="roadmap-summary">
+            플레이어: <span id="count-p" style="color: #3498db; font-weight: bold;">0</span>회 | 
+            뱅커: <span id="count-b" style="color: #e74c3c; font-weight: bold;">0</span>회 | 
+            타이: <span id="count-t" style="color: #2ecc71; font-weight: bold;">0</span>회
+        </div>
+    </div>
 
-        const suits = ['♠', '♦', '♥', '♣'];
-        const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-
-        // 베팅 선택 함수
-        function selectBet(type) {
-            selectedBet = type;
-            document.getElementById('current-bet-type').innerText = type;
-            document.getElementById('deal-btn').disabled = false;
-            document.getElementById('result-text').innerText = `${type}에 베팅 완료! DEAL 버튼을 눌러주세요.`;
-        }
-
-        // 바카라 스코어 계산 알고리즘
-        function getCardScore(cardValue) {
-            if (['10', 'J', 'Q', 'K'].includes(cardValue)) return 0;
-            if (cardValue === 'A') return 1;
-            return parseInt(cardValue);
-        }
-
-        function calculateScore(cards) {
-            let total = cards.reduce((sum, card) => sum + getCardScore(card.value), 0);
-            return total % 10; // 10의 자리는 버림
-        }
-
-        // 랜덤 카드 뽑기
-        function drawCard() {
-            const suit = suits[Math.floor(Math.random() * suits.length)];
-            const value = values[Math.floor(Math.random() * values.length)];
-            const isRed = suit === '♦' || suit === '♥';
-            return { suit, value, isRed };
-        }
-
-        // 카드 화면 렌더링
-        function renderCard(card, containerId) {
-            const container = document.getElementById(containerId);
-            const cardEl = document.createElement('div');
-            cardEl.className = `card ${card.isRed ? 'red' : ''}`;
-            cardEl.innerHTML = `
-                <div>${card.value}</div>
-                <div style="align-self: center; font-size: 2rem;">${card.suit}</div>
-                <div style="align-self: flex-end; transform: rotate(180deg);">${card.value}</div>
-            `;
-            container.appendChild(cardEl);
-        }
-
-        // 메인 게임 로직
-        function playGame() {
-            if (!selectedBet) return;
-            if (balance < betAmount) {
-                document.getElementById('result-text').innerText = "잔액이 부족합니다! 게임을 새로고침 하세요.";
-                return;
-            }
-
-            // 초기화
-            document.getElementById('player-cards').innerHTML = '';
-            document.getElementById('banker-cards').innerHTML = '';
-            document.getElementById('deal-btn').disabled = true;
-
-            balance -= betAmount;
-            document.getElementById('balance').innerText = balance.toLocaleString();
-
-            // 1. 플레이어, 뱅커 각각 2장씩 기본 지급
-            let pCards = [drawCard(), drawCard()];
-            let bCards = [drawCard(), drawCard()];
-
-            pCards.forEach(c => renderCard(c, 'player-cards'));
-            bCards.forEach(c => renderCard(c, 'banker-cards'));
-
-            let pScore = calculateScore(pCards);
-            let bScore = calculateScore(bCards);
-
-            document.getElementById('player-score').innerText = pScore;
-            document.getElementById('banker-score').innerText = bScore;
-
-            // 2. 내추럴 확인 (누구든 8이나 9가 나오면 그대로 경기 종료)
-            if (pScore >= 8 || bScore >= 8) {
-                endGame(pScore, bScore);
-                return;
-            }
-
-            // 3. 바카라 서드 카드(3번째 카드) 룰 적용
-            let playerDrewThird = false;
-            let thirdCardValue = -1;
-
-            // 플레이어 룰: 0~5점이면 한 장 더 받음
-            if (pScore <= 5) {
-                const newCard = drawCard();
-                pCards.push(newCard);
-                renderCard(newCard, 'player-cards');
-                pScore = calculateScore(pCards);
-                document.getElementById('player-score').innerText = pScore;
-                
-                playerDrewThird = true;
-                thirdCardValue = getCardScore(newCard.value);
-            }
-
-            // 뱅커 룰
-            if (!playerDrewThird) {
-                // 플레이어가 스탠드(6,7)인 경우, 뱅커는 0~5점일 때 한 장 더 받음
-                if (bScore <= 5) {
-                    const newCard = drawCard();
-                    bCards.push(newCard);
-                    renderCard(newCard, 'banker-cards');
-                    bScore = calculateScore(bCards);
-                }
-            } else {
-                // 플레이어가 3번째 카드를 받았을 때의 복잡한 뱅커 조건 규칙
-                if (bScore <= 2) {
-                    drawBankerThird();
-                } else if (bScore === 3 && thirdCardValue !== 8) {
-                    drawBankerThird();
-                } else if (bScore === 4 && [2, 3, 4, 5, 6, 7].includes(thirdCardValue)) {
-                    drawBankerThird();
-                } else if (bScore === 5 && [4, 5, 6, 7].includes(thirdCardValue)) {
-                    drawBankerThird();
-                } else if (bScore === 6 && [6, 7].includes(thirdCardValue)) {
-                    drawBankerThird();
-                }
-            }
-
-            function drawBankerThird() {
-                const newCard = drawCard();
-                bCards.push(newCard);
-                renderCard(newCard, 'banker-cards');
-                bScore = calculateScore(bCards);
-            }
-
-            document.getElementById('banker-score').innerText = bScore;
-            endGame(pScore, bScore);
-        }
-
-        // 결과 판정 및 정산
-        function endGame(pScore, bScore) {
-            let winner = '';
-            if (pScore > bScore) winner = 'PLAYER';
-            else if (bScore > pScore) winner = 'BANKER';
-            else winner = 'TIE';
-
-            let resultText = `결과: [${winner} 승리] `;
-            
-            if (selectedBet === winner) {
-                let payout = 0;
-                if (winner === 'TIE') payout = betAmount * 9; // 타이 9배 정산
-                else payout = Math.floor(betAmount * 1.95); // 플레이어/뱅커 1.95배 정산 (수수료 감안)
-                
-                balance += payout;
-                resultText += `🎉 베팅 성공! +${payout.toLocaleString()}원`;
-            } else {
-                resultText += `💸 베팅 실패...`;
-            }
-
-            document.getElementById('result-text').innerText = resultText;
-            document.getElementById('balance').innerText = balance.toLocaleString();
-            
-            // 초기화
-            selectedBet = null;
-            document.getElementById('current-bet-type').innerText = '없음';
-        }
-    </script>
+    <!-- 자바스크립트 연동 (맨 아래에 위치) -->
+    <script src="script.js"></script>
 </body>
 </html>
